@@ -1,9 +1,6 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Text, View, TextInput, Button } from 'react-native';
-
-const KEY = '@storage:email';
-const BASE_URL = 'http://51.38.113.244:8080';
-// const BASE_URL = 'http://5c5c4a9f.ngrok.io';
+import { BASE_URL, KEY } from './Constants';
 
 export class SettingsScreen extends React.Component {
   constructor() {
@@ -11,20 +8,16 @@ export class SettingsScreen extends React.Component {
     this.state = { email: '' };
   }
   
-  componentDidMount() {
-    const fetchItem = async () => {
-      try {
-        const value = await AsyncStorage.getItem(KEY);
-        console.log(value);
-        if (value !== null) {
-          this.setState({ email: value })
-        }
-      } catch (error) {
-        console.log(error);
+  async componentDidMount() {
+    try {
+      const value = await AsyncStorage.getItem(KEY);
+      console.log(value);
+      if (value !== null) {
+        this.setState({ email: value })
       }
+    } catch (error) {
+      console.log(error);
     }
-
-    fetchItem();
   }
 
   render() {
