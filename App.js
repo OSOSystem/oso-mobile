@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from 'react-navigation';
 import { SettingsScreen } from './SettingsScreen';
 import { HelpRequester } from './HelpRequester';
 import { BASE_URL, KEY } from './Constants';
+import { registerForPushNotificationsAsync } from './Test'
+import Expo from 'expo';
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -13,6 +15,9 @@ class HomeScreen extends React.Component {
 
   async componentDidMount() {
     try {
+      console.log('mounting component');
+      await registerForPushNotificationsAsync();
+      console.log('blocking');
       const email = await AsyncStorage.getItem(KEY);
       console.log(`Got email: ${email}`);
       this.setState({ email: email });
@@ -29,13 +34,12 @@ class HomeScreen extends React.Component {
     const ws = new WebSocket('ws://51.38.113.244:8080/notify');
     ws.onopen = () => {
       console.log('Connection established');
+      Expo.Notifications.presentLocalNotificationAsync({title: 'Title', body: 'Body'});
     }
 
     ws.onmessage = (event) => {
-      const msg = event.data;
-      console.log(msg.longitude);
-      console.log(msg.latitude);
-      Alert.alert('Emergency', 'Received an emergency', [{text: 'Decline', onPress: () => console.log('hi')}, {text: 'Accept', onPress: () => this.openGoogleMaps(msg)}]);
+      const msg = JSON.parse(event.data);
+      Alert.alert('Emergency', `Received an emergency from location: ${msg.formattedAddress}`, [{text: 'Decline', onPress: () => console.log('hi')}, {text: 'Accept', onPress: () => this.openGoogleMaps(msg)}]);
     }
 
     ws.onerror = (error) => {
@@ -48,13 +52,10 @@ class HomeScreen extends React.Component {
     const lat = msg.latitude;
     const lng = msg.longitude;
     const latLng = `${lat},${lng}`;
-    // const label = 'Custom Label'; 
     const url = Platform.OS === 'ios' ? `${scheme}@${latLng}` : `${scheme}${latLng})`;
 
     Linking.openURL(url); 
   }
-
-  // handler={() => this.setState({ contacts: this.state.contacts.filter(contact => contact.id !== item.id)}) }
 
   render() {
     return (
@@ -66,24 +67,8 @@ class HomeScreen extends React.Component {
             })
           }
         </ScrollView>
-        <View style={{ margin: 10 }}>
-          <TextInput placeholder="Id" onChangeText={text => this.setState({ id: text })} />
-          <TextInput placeholder="Name" onChangeText={text => this.setState({ name: text })} />
-          <Button title="+" color="green" onPress={() => {
-            if (this.state.id === '') {
-              Alert.alert('Id cannot be empty!')
-              return;
-            }
-
-            if (this.state.name === '') {
-              Alert.alert('Name cannot be empty!')
-              return;
-            }
-            
-            const helpRequester = { id: this.state.id, name: this.state.name, lastLocation: 'unknown' };
-            this.setState({ contacts: [...this.state.contacts, helpRequester]});
-            
-            fetch(`${BASE_URL}/help-requester`, {
+        <View style={{ margin: 10 }}>    
+            {/* fetch(`${BASE_URL}/help-requester`, {
               method: 'POST',
               body: JSON.stringify(helpRequester)
             });
@@ -91,10 +76,8 @@ class HomeScreen extends React.Component {
             fetch(`${BASE_URL}/contact`, {
               method: 'POST',
               body: JSON.stringify({helpRequesterId: helpRequester.id, helpProviderId: this.state.email})
-            });
-
-            console.log(this.state.contacts);
-          }} />
+            }); */}
+          {/* }} /> */}
         </View>
       </View>
     );
