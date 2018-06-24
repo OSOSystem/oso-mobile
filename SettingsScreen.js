@@ -5,16 +5,30 @@ import { BASE_URL, KEY } from './Constants';
 export class SettingsScreen extends React.Component {
   constructor() {
     super();
-    this.state = { email: '' };
+    this.state = { id: '' };
   }
   
   async componentDidMount() {
     try {
-      const value = await AsyncStorage.getItem(KEY);
-      console.log(value);
-      if (value !== null) {
-        this.setState({ email: value })
+      const item = await AsyncStorage.getItem(KEY);
+      console.log(item);
+      if (item !== null) {
+        this.setState({ id: item })
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async saveHelpRequester() {
+    try {
+      await AsyncStorage.setItem(KEY, this.state.id);
+    
+      fetch(`${BASE_URL}/help-provider`, {
+        method: 'POST',
+        body: JSON.stringify({id: Integer.parseInt(this.state.id, 10)})
+      });
+      console.log('Saved value');
     } catch (error) {
       console.log(error);
     }
@@ -24,20 +38,13 @@ export class SettingsScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <TextInput placeholder="E-Mail" onChangeText={ text => this.setState({ email: text }) } value={ this.state.email } style={{ flex: 1, marginLeft: 10, marginRight: 10 }} />
-          <Button title="Save" onPress={async () => {
-            try {
-              await AsyncStorage.setItem(KEY, this.state.email);
-            
-              fetch(`${BASE_URL}/help-provider`, {
-                method: 'POST',
-                body: JSON.stringify({name: "X", email: this.state.email})
-              });
-              console.log('Saved value');
-            } catch (error) {
-              console.log(error);
-            } 
-          }} style={{ flex: 1, marginRight: 10 }} />
+          <TextInput placeholder="E-Mail" 
+                     onChangeText={ text => this.setState({ helpRequesterId: text }) } 
+                     value={ this.state.helpRequesterId } 
+                     style={{ flex: 1, marginLeft: 10, marginRight: 10 }} />
+          <Button title="Save" 
+                  onPress={this.saveHelpRequester} 
+                  style={{ flex: 1, marginRight: 10 }} />
         </View>
       </View>
     );

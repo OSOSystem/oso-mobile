@@ -6,12 +6,6 @@ export class HelpRequester extends React.Component {
       super();
     }
   
-    delete() {
-      fetch(`${BASE_URL}/help-requesters/${this.props.id}`, {
-        method: 'DELETE'
-      });
-    }
-  
     render() {
       return (
         <View style={{ flex: 1, flexDirection: 'row', margin: 20, borderWidth: 1, borderRadius: 4, borderColor: 'grey', alignItems: 'center', padding: 20 }}>
