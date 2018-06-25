@@ -20,13 +20,14 @@ export class SettingsScreen extends React.Component {
     }
   }
 
-  async saveHelpRequester() {
+  async _saveHelpProvider() {
     try {
+      console.log(`Saving ${this.state.id} to storage`);
       await AsyncStorage.setItem(KEY, this.state.id);
-    
+
       fetch(`${BASE_URL}/help-provider`, {
         method: 'POST',
-        body: JSON.stringify({id: Integer.parseInt(this.state.id, 10)})
+        body: JSON.stringify({id: parseInt(this.state.id, 10)})
       });
       console.log('Saved value');
     } catch (error) {
@@ -38,12 +39,12 @@ export class SettingsScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <TextInput placeholder="E-Mail" 
-                     onChangeText={ text => this.setState({ helpRequesterId: text }) } 
-                     value={ this.state.helpRequesterId } 
+          <TextInput placeholder="Id" 
+                     onChangeText={ text => this.setState({ id: text }) } 
+                     value={ this.state.id } 
                      style={{ flex: 1, marginLeft: 10, marginRight: 10 }} />
           <Button title="Save" 
-                  onPress={this.saveHelpRequester} 
+                  onPress={() => this._saveHelpProvider()} 
                   style={{ flex: 1, marginRight: 10 }} />
         </View>
       </View>
