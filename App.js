@@ -5,8 +5,26 @@ import { LoginScreen } from './LoginScreen';
 
 const RootStack = createStackNavigator(
   {
-    Login: LoginScreen,
-    Home: HomeScreen
+    Login: {
+      screen: LoginScreen,
+      navigationOptions: () => ({
+        headerTitle: 'Anmeldung',
+        headerStyle: {
+          backgroundColor: '#1976d2',
+        },
+        headerTintColor: '#fff',
+      })
+    },
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: () => ({
+        headerTitle: 'Übersicht',
+        headerStyle: {
+          backgroundColor: '#1976d2',
+        },
+        headerTintColor: '#fff',
+      })
+    }
   },
   {
     initialRouteName: 'Login'

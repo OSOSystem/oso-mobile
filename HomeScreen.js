@@ -22,9 +22,10 @@ export class HomeScreen extends React.Component {
       Notifications.addListener(notification => {
         console.log(notification);
         const data = notification.data;
+        const helpRequester = this.state.helpRequesters.filter(helpRequester => helpRequester.id === data.id)
         Alert.alert(
-          notification.title,
-          notification.body,
+          "Emergency",
+          `Received emergency from: ${helpRequester.name}, ${data.formattedAddress}`,
           [
             { text: 'Accept', onPress: () => { this._acceptEmergency(data); this._openGoogleMaps(data) } },
             { text: 'Decline', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
@@ -34,6 +35,7 @@ export class HomeScreen extends React.Component {
     }
   
     _acceptEmergency(emergency) {
+      console.log(emergency);
       fetch(`${BASE_URL}/help-providers/accept-emergency`, {
         method: 'POST',
         headers: {
@@ -44,11 +46,11 @@ export class HomeScreen extends React.Component {
     }
   
     _openGoogleMaps(emergency) {
-      const scheme = Platform.OS === 'ios' ? 'maps:0,0?q=' : 'geo:0,0?q=';
-      const lat = emergency.latitude;
-      const lng = emergency.longitude;
-      const latLng = `${lat},${lng}`;
-      const url = Platform.OS === 'ios' ? `${scheme}@${latLng}` : `${scheme}${latLng})`;
+      const scheme = Platform.OS === 'ios' ? 'maps:0,0?q=' : 'google.navigation:q=';
+      const lat = emergency.coordinates.latitude;
+      const lng = emergency.coordinates.longitude;
+      const latLng = `${lat}+${lng}`;
+      const url = Platform.OS === 'ios' ? `${scheme}@${latLng}` : `${scheme}${latLng}`;
   
       Linking.openURL(url);
     }

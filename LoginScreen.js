@@ -13,20 +13,11 @@ export class LoginScreen extends React.Component {
         this.state = { name: "", email: "", password: "" }
     }
 
-    async componentDidMount() {
-        try {
-            const created = await AsyncStorage.getItem(KEY)
-            this.props.navigation.navigate('Home');
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     async _saveHelpProvider() {
         try {
             const expoPushToken = await registerForPushNotificationsAsync();
             const response =
-                await fetch(`${BASE_URL}/help-provider`, {
+                await fetch(`${BASE_URL}/help-providers`, {
                     method: 'POST',
                     body: JSON.stringify({
                         name: this.state.name,
@@ -35,9 +26,10 @@ export class LoginScreen extends React.Component {
                         password: this.state.password
                     })
                 });
-
-            await AsyncStorage.setItem(KEY, true);
-            this.props.navigation.navigate('Home');
+            const id = response.headers.map.location[0].split('/')[1];
+            console.log(id);
+            await AsyncStorage.setItem(KEY, id);
+            this.props.navigation.navigate('Home', {id : id});
         } catch (error) {
             console.log(error);
         }
@@ -49,7 +41,7 @@ export class LoginScreen extends React.Component {
                 <TextInput placeholder="Name" onChangeText={text => this.setState({ name: text })} />
                 <TextInput placeholder="E-Mail" onChangeText={text => this.setState({ email: text })} />
                 <TextInput placeholder="Password" onChangeText={text => this.setState({ password: text })} secureTextEntry={true} />
-                <Button title="Anemdeln & Login" onPress={() => this._saveHelpProvider} />
+                <Button title="Create" onPress={() => this._saveHelpProvider()} />
             </View>
         );
     }
