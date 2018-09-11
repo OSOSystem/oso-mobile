@@ -1,3 +1,9 @@
+# OSO Help Provider App
+## Licensing
+Apache 2.0 licensing https://github.com/Valefant/oso-mobile/blob/master/LICENSE
+
+## Additional Information
+
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 Below you'll find information about performing common tasks. The most recent version of this guide is available [here](https://github.com/react-community/create-react-native-app/blob/master/react-native-scripts/template/README.md).
