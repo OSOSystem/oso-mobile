@@ -1,6 +1,10 @@
 # OSO Help Provider App
 ## Licensing
 Apache 2.0 licensing https://github.com/Valefant/oso-mobile/blob/master/LICENSE
+React-Native (https://github.com/facebook/react-native/blob/master/LICENSE)
+Expo (https://github.com/expo/expo/blob/master/LICENSE)
+Typescript (https://github.com/Microsoft/TypeScript/blob/master/LICENSE.txt)
+
 
 ## Additional Information
 
