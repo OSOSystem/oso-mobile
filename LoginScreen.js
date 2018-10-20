@@ -1,11 +1,7 @@
-import { Notifications } from 'expo';
 import React from 'react';
-import { Alert, AsyncStorage, FlatList, Linking, Platform, View, TextInput, Button } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { AsyncStorage, Button, TextInput, View } from 'react-native';
 import { BASE_URL, KEY } from './Constants';
-import { HelpRequester } from './HelpRequester';
 import { registerForPushNotificationsAsync } from './PushNotification';
-import { SettingsScreen } from './SettingsScreen';
 
 export class LoginScreen extends React.Component {
     constructor(props) {

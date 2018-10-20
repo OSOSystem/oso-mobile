@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { Button, Image, Text, View } from 'react-native';
 
 export class HelpRequester extends React.Component {
   constructor() {
