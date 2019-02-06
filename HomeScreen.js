@@ -1,8 +1,9 @@
 import { Notifications } from 'expo';
 import React from 'react';
-import { Alert, FlatList, Linking, Platform, View } from 'react-native';
-import { BASE_URL } from './Constants';
+import {Alert, AsyncStorage, FlatList, Linking, Platform, View} from 'react-native';
+import {BASE_URL, KEY} from './Constants';
 import { HelpRequester } from './HelpRequester';
+import {registerForPushNotificationsAsync} from "./PushNotification";
 
 export class HomeScreen extends React.Component {
     constructor(props) {
@@ -11,6 +12,9 @@ export class HomeScreen extends React.Component {
     }
   
     async componentDidMount() {
+      const expoPushToken = await registerForPushNotificationsAsync();
+      await AsyncStorage.setItem(KEY, id);
+
       try {  
         const response = await fetch(`${BASE_URL}/help-providers/${this.state.helpProviderId}/help-requesters`);
         const data = await response.json();
@@ -22,12 +26,12 @@ export class HomeScreen extends React.Component {
       Notifications.addListener(notification => {
         console.log(notification);
         const data = notification.data;
-        const helpRequester = this.state.helpRequesters.filter(helpRequester => helpRequester.id === data.id)
+        const helpRequester = this.state.helpRequesters.filter(helpRequester => helpRequester.id === data.id);
         Alert.alert(
           "Emergency",
           `Received emergency from: ${helpRequester.name}, ${data.formattedAddress}`,
           [
-            { text: 'Accept', onPress: () => { this._acceptEmergency(data); this._openGoogleMaps(data) } },
+            { text: 'Accept', onPress: () => { this._acceptEmergency(data); HomeScreen._openGoogleMaps(data) } },
             { text: 'Decline', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
           ]
         )
@@ -45,7 +49,7 @@ export class HomeScreen extends React.Component {
       })
     }
   
-    _openGoogleMaps(emergency) {
+    static _openGoogleMaps(emergency) {
       const scheme = Platform.OS === 'ios' ? 'maps:0,0?q=' : 'google.navigation:q=';
       const lat = emergency.coordinates.latitude;
       const lng = emergency.coordinates.longitude;

@@ -11,7 +11,7 @@ export class LoginScreen extends React.Component {
 
     async _saveHelpProvider() {
         try {
-            const expoPushToken = await registerForPushNotificationsAsync();
+
             const response =
                 await fetch(`${BASE_URL}/help-providers`, {
                     method: 'POST',
@@ -24,7 +24,8 @@ export class LoginScreen extends React.Component {
                 });
             const id = response.headers.map.location[0].split('/')[1];
             console.log(id);
-            await AsyncStorage.setItem(KEY, id);
+
+
             this.props.navigation.navigate('Home', {id : id});
         } catch (error) {
             console.log(error);
